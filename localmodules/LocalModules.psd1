@@ -95,13 +95,13 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Windows', 'Powershell-7', 'Development', 'Modules')
+        Tags = @('Windows', 'DevOps', 'PackageManagement')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/HumanAgainstMachine/LocalModules?tab=MIT-1-ov-file'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/HumanAgainstMachine/LocalModules'
 
         # A URL to an icon representing this module.
         # IconUri = ''
