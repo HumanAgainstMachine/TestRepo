@@ -91,9 +91,9 @@ function Uninstall-LocalModule {
 function Get-LocalInstalledModule {
     <#
     .SYNOPSIS
-        Get local installed modules
+        Get locally installed modules
     .DESCRIPTION
-        Gets the list of modules installed not from a repository
+        Gets the list of modules not installed from a repository
     #>
     [CmdletBinding()]
     param ()
@@ -103,56 +103,64 @@ function Get-LocalInstalledModule {
     Where-Object { $_.SideIndicator -eq "<=" }
 
     if ($localInstalledModules.Count -eq 0) {
-        Write-Host "No local modules found." 
+        Write-Host "No local modules found." -ForegroundColor DarkYellow
     } else {
-        Write-Host $localInstalledModules -Separator "`n" -ForegroundColor DarkYellow
+        Write-Host "`nName`n----" -ForegroundColor Green
+        Write-Host $localInstalledModules -Separator "`n"
+        Write-Host " "
     }
 }
 
 function Set-LocalRepo {
     <#
     .SYNOPSIS
-        Set up a local repository named LocalRepo on the file system 
+        Set up LocalRepo repository on the file system
     
     .DESCRIPTION
         This cmdlet registers the repository at location %USERPROFILE%\LocalRepo
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param ()
     
-    # Create LocalRepo folder if not exist
-    if (-Not (Test-Path -Path $localRepoPath -PathType Container)) {
-        New-Item -Path $localRepoPath -ItemType Directory | Out-Null
-    }
-
-    try {
-        Register-PSRepository -Name 'LocalRepo' -SourceLocation $localRepoPath -InstallationPolicy 'Trusted' -ErrorAction Stop
-        Write-Host "LocalRepo successfully set at $localRepoPath" -ForegroundColor Green
-    }
-    catch {
-        Write-Host "LocalRepo already exist" -ForegroundColor Red
-    }
+    if($PSCmdlet.ShouldProcess($localRepoPath, 'Set LocalRepo')){
+        try {    
+            # Create LocalRepo folder if not exist
+            New-Item -Path $localRepoPath -ItemType Directory -ErrorAction SilentlyContinue | Out-Null        
+    
+            Register-PSRepository -Name 'LocalRepo' -SourceLocation $localRepoPath -InstallationPolicy 'Trusted' -ErrorAction Stop
+            Write-Host "LocalRepo successfully set at location $localRepoPath" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "LocalRepo is already set" -ForegroundColor DarkYellow
+        }
+    }    
 }
 
 function Remove-LocalRepo {
     <#
     .SYNOPSIS
-        Remove LocalRepo repository
+        Remove LocalRepo repository from the file system
     
     .DESCRIPTION
         This cmdlet unregisters the repository and remove LocalRepo folder with its content
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param ()
 
-    try {
-        Unregister-PSRepository -Name 'LocalRepo' -ErrorAction Stop
-        if (Test-Path -Path $localRepoPath -PathType Container) {
-            Remove-Item -Path $localRepoPath -Force -Recurse
+    if($PSCmdlet.ShouldProcess($localRepoPath, 'Remove LocalRepo')){    
+        try {
+            # Check if LocalRepo exists
+            Get-PSRepository -Name "LocalRepo" -ErrorAction Stop | Out-Null
+
+            Unregister-PSRepository -Name 'LocalRepo'
+
+            # Remove folder and its content if exist
+            Remove-Item -Path $localRepoPath -Force -Recurse -ErrorAction SilentlyContinue | Out-Null
+            
+            Write-Host "LocalRepo removed" -ForegroundColor Green
         }
-        Write-Host "LocalRepo removed" -ForegroundColor Green
-    }
-    catch {
-        Write-Host "LocalRepo not exist" -ForegroundColor Red
+        catch {
+            Write-Host "LocalRepo not found" -ForegroundColor DarkYellow
+        }
     }
 }
