@@ -1,6 +1,16 @@
 # LocalModules
 
-LocalModules allows you to `install` and `uninstall` PowerShell (PS) modules that are not yet published to a repository, facilitating a quicker development and testing cycle.
+While developing your PowerShell module, you will often need to install it on your system to test it. This involves copying the module files (e.g., the .psm1 file, the module manifest, and any other associated files) to a directory on your Windows computer.
+
+The directory must be one listed in the PSModulePath environment variable.
+
+To speed up the installation process, you can use LocalModules, which handles removing the previously installed module and copying the new one.
+
+LocalModules installs the module in your user-specific Modules directory, located at:
+
+`$HOME\Documents\WindowsPowerShell\Modules\<Module Folder>\<Module Files>`
+
+LocalModules allows you to `install`, `uninstall` and `list` modules that are not yet published to a repository, facilitating a quicker development and testing cycle.
 
 Additionally, it enables you to set up a local repository for testing PS module publishing.
 
@@ -13,6 +23,7 @@ Install LocalModules from [Powershell Gallery](https://www.powershellgallery.com
 Install-Module -Name LocalModules
 ```
 
+# Usage
 
 ## Install-LocalModule
 
@@ -29,29 +40,12 @@ Install-LocalModule [-Path] <String>
 This cmdlet installs an under development module bypassing repositories.
 Before uninstalls previous module if exists.
 
-### EXAMPLES
-
-#### Example 1
-```powershell
-PS C:\> Install-LocalModule -Path .\MyModule
-```
 
 ### PARAMETERS
 
 #### -Path
 Path to the module folder
 
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ## Uninstall-LocalModule
 
@@ -67,29 +61,12 @@ Uninstall-LocalModule [-Name] <String>
 ### DESCRIPTION
 This cmdlet uninstalls the local module with given Name.
 
-### EXAMPLES
-
-#### Example 1
-```powershell
-PS C:\> Uninstall-LocalModule -Name MyModule
-```
 
 ### PARAMETERS
 
 #### -Name
 Name of the Module to uninstall
 
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 ## Get-LocalInstalledModule
 
 ### SYNOPSIS
@@ -104,12 +81,6 @@ Get-LocalInstalledModule
 ### DESCRIPTION
 This cmdlet gets the list of modules not installed from a repository
 
-### EXAMPLES
-
-#### Example 1
-```powershell
-PS C:\> Get-LocalInstalledModule
-```
 
 ## Set-LocalRepo
 
@@ -125,30 +96,11 @@ Set-LocalRepo [-WhatIf] [-Confirm]
 ### DESCRIPTION
 This cmdlet registers the repository located at %USERPROFILE%\LocalRepo
 
-### EXAMPLES
-
-#### Example 1
-```powershell
-PS C:\> Set-LocalRepo
-```
-
 ### PARAMETERS
 
 #### -WhatIf
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 #### -Confirm
 Prompts you for confirmation before running the cmdlet.
@@ -179,12 +131,6 @@ Remove-LocalRepo [-WhatIf] [-Confirm]
 ### DESCRIPTION
 This cmdlet unregisters the repository and remove LocalRepo folder with its content
 
-### EXAMPLES
-
-#### Example 1
-```powershell
-PS C:\> Remove-LocalRepo
-```
 
 ### PARAMETERS
 
@@ -192,29 +138,5 @@ PS C:\> Remove-LocalRepo
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: wi
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 #### -Confirm
 Prompts you for confirmation before running the cmdlet.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: cf
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
