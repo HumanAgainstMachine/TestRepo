@@ -10,35 +10,35 @@ Additionally, it enables you to set up a local repository for testing PS module 
 Install LocalModules from [Powershell Gallery](https://www.powershellgallery.com/packages/LocalModules)
 
 ```powershell
-PS C:\> Install-Module -Name LocalModules
+Install-Module -Name LocalModules
 ```
 
 
-# Install-LocalModule
+## Install-LocalModule
 
-## SYNOPSIS
+### SYNOPSIS
 Install a local module bypassing repositories
 
-## SYNTAX
+### SYNTAX
 
 ```
 Install-LocalModule [-Path] <String>
 ```
 
-## DESCRIPTION
+### DESCRIPTION
 This cmdlet installs an under development module bypassing repositories.
 Before uninstalls previous module if exists.
 
-## EXAMPLES
+### EXAMPLES
 
-### Example 1
+#### Example 1
 ```powershell
 PS C:\> Install-LocalModule -Path .\MyModule
 ```
 
-## PARAMETERS
+### PARAMETERS
 
-### -Path
+#### -Path
 Path to the module folder
 
 ```yaml
@@ -53,30 +53,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-# Uninstall-LocalModule
+## Uninstall-LocalModule
 
-## SYNOPSIS
+### SYNOPSIS
 Uninstall a local module
 
-## SYNTAX
+### SYNTAX
 
 ```
 Uninstall-LocalModule [-Name] <String>
 ```
 
-## DESCRIPTION
+### DESCRIPTION
 This cmdlet uninstalls the local module with given Name.
 
-## EXAMPLES
+### EXAMPLES
 
-### Example 1
+#### Example 1
 ```powershell
 PS C:\> Uninstall-LocalModule -Name MyModule
 ```
 
-## PARAMETERS
+### PARAMETERS
 
-### -Name
+#### -Name
 Name of the Module to uninstall
 
 ```yaml
@@ -90,51 +90,51 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
-# Get-LocalInstalledModule
+## Get-LocalInstalledModule
 
-## SYNOPSIS
+### SYNOPSIS
 Get locally installed modules
 
-## SYNTAX
+### SYNTAX
 
 ```
 Get-LocalInstalledModule
 ```
 
-## DESCRIPTION
+### DESCRIPTION
 This cmdlet gets the list of modules not installed from a repository
 
-## EXAMPLES
+### EXAMPLES
 
-### Example 1
+#### Example 1
 ```powershell
 PS C:\> Get-LocalInstalledModule
 ```
 
-# Set-LocalRepo
+## Set-LocalRepo
 
-## SYNOPSIS
+### SYNOPSIS
 Set up LocalRepo repository on the file system
 
-## SYNTAX
+### SYNTAX
 
 ```
 Set-LocalRepo [-WhatIf] [-Confirm]
 ```
 
-## DESCRIPTION
+### DESCRIPTION
 This cmdlet registers the repository located at %USERPROFILE%\LocalRepo
 
-## EXAMPLES
+### EXAMPLES
 
-### Example 1
+#### Example 1
 ```powershell
 PS C:\> Set-LocalRepo
 ```
 
-## PARAMETERS
+### PARAMETERS
 
-### -WhatIf
+#### -WhatIf
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
@@ -150,7 +150,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Confirm
+#### -Confirm
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
@@ -165,30 +165,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-# Remove-LocalRepo
+## Remove-LocalRepo
 
-## SYNOPSIS
+### SYNOPSIS
 Remove LocalRepo repository from the file system
 
-## SYNTAX
+### SYNTAX
 
 ```
 Remove-LocalRepo [-WhatIf] [-Confirm]
 ```
 
-## DESCRIPTION
+### DESCRIPTION
 This cmdlet unregisters the repository and remove LocalRepo folder with its content
 
-## EXAMPLES
+### EXAMPLES
 
-### Example 1
+#### Example 1
 ```powershell
 PS C:\> Remove-LocalRepo
 ```
 
-## PARAMETERS
+### PARAMETERS
 
-### -WhatIf
+#### -WhatIf
 Shows what would happen if the cmdlet runs.
 The cmdlet is not run.
 
@@ -204,7 +204,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Confirm
+#### -Confirm
 Prompts you for confirmation before running the cmdlet.
 
 ```yaml
