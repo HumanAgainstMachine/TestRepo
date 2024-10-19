@@ -6,19 +6,19 @@
     Cmdlets to manage a local modules for current user
 #>
 
-#--- Init code
+# The folder where are under development modules
+$localModulesPath = 'C:\Users\Admin\works' # to be used later ...
 
 $localRepoPath = Join-Path -Path $env:USERPROFILE -ChildPath 'LocalRepo'
 
-# current user's modules path
-$doc = [Environment]::GetFolderPath('MyDocuments')
-$userModulesPath = Join-Path -Path $doc -ChildPath "PowerShell\Modules"
-# all PS module paths
-$ModulePaths = $env:PSModulePath -split ';'
+# Get path to user-specific installed modules
+$userModulesPath = $env:PSModulePath -split ';' | Where-Object { $_ -like [Environment]::GetFolderPath('MyDocuments')+'*'}
 
-if (-Not ($ModulePaths -contains $userModulesPath)) {
-    Write-Host "Current user's module path not found in PSModulePath." -ForegroundColor Red
-    Exit 2
+if (-not ($userModulesPath)) {
+    Write-Host "User-specific module path " -NoNewline -ForegroundColor Red
+    Write-Host $userModulesPath -NoNewline -ForegroundColor DarkGray
+    Write-Host " not found in PSModulePath." -ForegroundColor Red
+    Exit 2    
 }
 
 $RepoInstalledModules = (Get-InstalledModule).Name
@@ -29,7 +29,7 @@ function Install-LocalModule {
         Install a local module bypassing repositories
 
     .DESCRIPTION
-        This cmdlet installs an under development module bypassing repositories. Before uninstalls previous module if exists.
+        This cmdlet installs an under-development module bypassing repositories, before uninstalls previous installed local module if exists.
     #>
     [CmdletBinding()]
     param (
@@ -37,24 +37,57 @@ function Install-LocalModule {
         [String]$Path
     )
 
-    # Infer the module name
-    $moduleName = Split-Path -Path $Path -Leaf
-
-    # Check if local module folder exist
     if (Test-Path -Path $Path -PathType Container) {
-        # Check if local module is already installed from a repo
-        if ($RepoInstalledModules -contains $moduleName) {
-            Write-Host "$moduleName is already installed from a repository"
-        } else {
-            # Silently uninstall old version local module if exist
-            $installedModulePath = Join-Path -Path $userModulesPath -ChildPath $moduleName
-            Remove-Item -Path $installedModulePath -Recurse -Force -ErrorAction SilentlyContinue
-            # Install current version local module
-            Copy-Item -Path "$Path\" -Destination $installedModulePath -Recurse -Force
+
+        # Get module name from folder name
+        $moduleName = Split-Path -Path $Path -Leaf        
+
+        if ($RepoInstalledModules -contains $moduleName) {# Local module installed from a repo check
+            Write-Host "$moduleName already installed from a repository" -ForegroundColor Red
+            Write-Host "Uninstall any version installed from a repository before continuing" -ForegroundColor DarkYellow
+        } 
+        else {
+            # Uninstall previous local module if exist
+            $ver0ModulePath = Join-Path $userModulesPath $moduleName '0.0.0'
+            Remove-Item -Path $ver0ModulePath -Recurse -Force -ErrorAction SilentlyContinue
+
+            # Install current local module
+            New-Item -Path $ver0ModulePath -ItemType Directory -Force | Out-Null
+            Copy-Item -Path "$Path\*" -Destination $ver0ModulePath -Recurse -Force
+
+            # Path to installed manifest file
+            $ver0ManifestPath = Join-Path $ver0ModulePath "$moduleName.psd1"
+
+            # Set ver to 0.0.0 if manifest exist
+            if (Test-Path -Path $ver0ManifestPath) {
+                $outputLines = @()
+
+                # Read manifest file line by line
+                $manifestContent = Get-Content -Path $ver0ManifestPath
+
+                # Loop through each line and replace the line starting with 'ModuleVersion'
+                foreach ($line in $manifestContent) {
+
+                    if ($line -match '^ModuleVersion') {
+                        $outputLines += "ModuleVersion = '0.0.0'"
+                    } else {
+                        $outputLines += $line
+                    }
+                }
+
+                # Save the updated content back to the .psd1 file
+                $outputLines | Set-Content -Path $ver0ManifestPath
+            }
+            else {# Create a minimal ver 0.0.0 manifest if NOT exist
+                New-ModuleManifest -Path $ver0ManifestPath -RootModule ".\$moduleName.psm1" -ModuleVersion '0.0.0'
+                Write-Host "A minimal manifest has been installed because you don't have one" -ForegroundColor DarkYellow
+            } 
+            
             Import-Module -Name $moduleName -Force
             Write-Host "$moduleName module successfully installed" -ForegroundColor Green            
         }
-    } else {
+    } 
+    else {   
         Write-Host "Local Module not found at path $path" -ForegroundColor Red
     }
 }
@@ -73,14 +106,16 @@ function Uninstall-LocalModule {
         [String]$Name
     )
 
-    $installedModulePath = Join-Path -Path $userModulesPath -ChildPath $Name
-    # Check if given module is installed
-    if (Test-Path -Path $installedModulePath -PathType Container) {
-        # Check if given module is installed from a repo
-        if ($RepoInstalledModules -contains $Name) {
-            Write-Host "$Name is installed from a repository. Use Uninstall-Module -Name $Name"
+    # $ver0ModulePath = Join-Path -Path $userModulesPath -ChildPath $Name
+    $ver0ModulePath = Join-Path $userModulesPath $Name '0.0.0'
+
+    # Local module installed check
+    if (Test-Path -Path $ver0ModulePath -PathType Container) {
+
+        if ($RepoInstalledModules -contains $Name) {# Local module installed from a repo check
+            Write-Host "$Name is installed from a repository. Use cmdlet Uninstall-Module to uninstall it"
         } else {
-            Remove-Item -Path $installedModulePath -Recurse -Force
+            Remove-Item -Path $ver0ModulePath -Recurse -Force
             Write-Host "$Name module successfully uninstalled" -ForegroundColor Green
         }        
     } else {
