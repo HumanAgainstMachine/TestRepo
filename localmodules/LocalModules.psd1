@@ -12,7 +12,7 @@
 RootModule = '.\LocalModules.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.1'
+ModuleVersion = '1.0.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core')
@@ -105,7 +105,7 @@ PrivateData = @{
         LicenseUri = 'https://github.com/HumanAgainstMachine/LocalModules?tab=MIT-1-ov-file'
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/HumanAgainstMachine/LocalModules'
+        ProjectUri = 'https://humanagainstmachine.github.io/LocalModules/'
 
         # A URL to an icon representing this module.
         # IconUri = ''
