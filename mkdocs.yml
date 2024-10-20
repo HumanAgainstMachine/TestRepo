@@ -1,6 +1,7 @@
 site_name: LocalModules
 site_url: https://humanagainstmachine.github.io/LocalModules/
 repo_url: https://github.com/HumanAgainstMachine/LocalModules
+repo_name: HumanAgainstMachine/LocalModules
 nav:
 - LocalModules: index.md
 - Local Repo: LocalRepo.md
