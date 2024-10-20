@@ -40,8 +40,8 @@ function Install-LModule {
         $moduleName = Split-Path -Path $Path -Leaf        
 
         if ($repoInstalledModNames -contains $moduleName) {# Local module installed from a repo check
-            Write-Host "$moduleName already installed from a repository" -ForegroundColor Red
-            Write-Host "Uninstall any version installed from a repository before continuing" -ForegroundColor DarkYellow
+            Write-Host "$moduleName is already installed from a repository" -ForegroundColor Red
+            Write-Host "Uninstall any version installed from a repository to prevent confusion." -ForegroundColor DarkYellow
         } 
         else {
             # Uninstall previous local module if exist
@@ -81,7 +81,7 @@ function Install-LModule {
             } 
             
             Import-Module -Name $moduleName -Force
-            Write-Host "$moduleName module successfully installed" -ForegroundColor Green            
+            Write-Host "Local module $moduleName successfully installed" -ForegroundColor Green            
         }
     } 
     else {   
@@ -108,15 +108,22 @@ function Uninstall-LModule {
 
     # Local module installed check
     if (Test-Path -Path $ver0ModulePath -PathType Container) {
+        
+        # Local module also installed from a repo check
+        if ($repoInstalledModNames -contains $Name) {
+            Write-Host @"
 
-        if ($repoInstalledModNames -contains $Name) {# Local module installed from a repo check
-            Write-Host "$Name is installed from a repository. Use cmdlet Uninstall-Module to uninstall it"
-        } else {
-            Remove-Item -Path $ver0ModulePath -Recurse -Force
-            Write-Host "$Name module successfully uninstalled" -ForegroundColor Green
-        }        
+$Name is also installed from a repository, you likely forced the installation 
+from there. I recommend uninstalling the repository version to avoid confusion.
+
+"@ -ForegroundColor DarkYellow
+        }
+
+        Remove-Item -Path $ver0ModulePath -Recurse -Force
+        Write-Host "Local module $Name successfully uninstalled" -ForegroundColor Green
+        
     } else {
-        Write-Host "$Name module not found" -ForegroundColor Red
+        Write-Host "Local module $Name not found" -ForegroundColor Red
     }    
 }
 
@@ -130,16 +137,20 @@ function Get-LInstalledModule {
     [CmdletBinding()]
     param ()
     # Get all directories in user modules path
-    $allInstalledModNames = (Get-ChildItem -Path $myModulePath -Directory).Name
-    $localInstalledModNames = Compare-Object -ReferenceObject $allInstalledModNames -DifferenceObject $repoInstalledModNames -PassThru | 
-    Where-Object { $_.SideIndicator -eq "<=" }
+    $localInstalledModNames =   Get-ChildItem -Path $myModulePath -Directory | 
+                                Where-Object { Test-Path (Join-Path $_.FullName '0.0.0') -PathType Container } |
+                                Select-Object -ExpandProperty Name
 
     if ($localInstalledModNames.Count -eq 0) {
         Write-Host "No local modules found." -ForegroundColor DarkYellow
     } else {
         Write-Host "`nName`n----" -ForegroundColor Green
-        Write-Host $localInstalledModNames -Separator "`n"
-        Write-Host " "
+        foreach ($mod in $localInstalledModNames) {
+            Write-Host $mod -NoNewline
+            if ($repoInstalledModNames -contains $mod) {Write-Host " (also installed from a repository)" -ForegroundColor DarkYellow}
+            else {Write-Host ""}
+        }
+
     }
 }
 
