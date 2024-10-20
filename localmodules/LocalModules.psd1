@@ -12,7 +12,7 @@
 RootModule = '.\LocalModules.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '1.0.1'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core')
@@ -112,6 +112,11 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+[ver 1.0.1] - 2024-10-20
+* Fix Get-LInstalledModule displaying non-installed local modules in certain cases.
+* Fix Uninstall-LModule preventing the uninstallation of a local module when a repository version is present.
+* Find workaround to PS session cache refresh
+
 [ver 1.0.0] - 2024-10-20
 * Improve vars and cmdlets names
 * Improve manifest

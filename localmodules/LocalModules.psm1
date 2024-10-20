@@ -79,9 +79,9 @@ function Install-LModule {
                 New-ModuleManifest -Path $ver0ManifestPath -RootModule ".\$moduleName.psm1" -ModuleVersion '0.0.0'
                 Write-Host "A minimal manifest has been installed because you don't have one" -ForegroundColor DarkYellow
             } 
-            
-            Import-Module -Name $moduleName -Force
-            Write-Host "Local module $moduleName successfully installed" -ForegroundColor Green            
+
+            Write-Host "Local module $moduleName successfully installed" -ForegroundColor Green
+            Write-Host "Close and reopen the PowerShell console to restart the session and see the changes." -ForegroundColor DarkYellow
         }
     } 
     else {   
@@ -121,6 +121,7 @@ from there. I recommend uninstalling the repository version to avoid confusion.
 
         Remove-Item -Path $ver0ModulePath -Recurse -Force
         Write-Host "Local module $Name successfully uninstalled" -ForegroundColor Green
+        Write-Host "Close and reopen the PowerShell console to restart the session and see the changes." -ForegroundColor DarkYellow
         
     } else {
         Write-Host "Local module $Name not found" -ForegroundColor Red
