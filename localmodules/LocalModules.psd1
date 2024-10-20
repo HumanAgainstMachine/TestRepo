@@ -30,7 +30,11 @@ CompanyName = 'Unknown'
 Copyright = '(c) Human.Against.Machine. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = "LocalModules allows you to install and uninstall PowerShell (PS) modules that are not yet published to a repository, facilitating a quicker development and testing cycle. Additionally, it enables you to set up a local repository for testing PS module publishing."
+Description = @'
+LocalModules allows you to easily install and uninstall PowerShell (PS) modules that are still under development and not yet ready for publishing. This streamlines the development and testing process. 
+
+Additionally, it supports setting up a local repository for testing PS module publishing.
+'@
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '7.1'
@@ -95,7 +99,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('Windows', 'DevOps', 'PackageManagement')
+        Tags = @('Powershell', 'DevOps', 'PackageManagement', 'Modules', 'PS', 'Local')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/HumanAgainstMachine/LocalModules?tab=MIT-1-ov-file'
@@ -107,7 +111,19 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = @'
+[ver 1.0.0] - 2024-10-20
+* Improve vars and cmdlets names
+* Improve manifest
+* Under-development modules are now installed in a separate folder named 0.0.0 as they were version 0.0.0. 
+  Any configuration files outside the 0.0.0 folder will be preserved.
+
+[ver 0.9.1] - 2024-07-01
+Improve cmdlets Set-LocalRepo and Remove-LocalRepo
+
+[ver 0.9.0] - 2024-06-23
+Initial release
+'@
 
         # Prerelease string of this module
         # Prerelease = ''

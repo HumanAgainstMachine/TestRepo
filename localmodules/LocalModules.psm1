@@ -6,24 +6,21 @@
     Cmdlets to manage a local modules for current user
 #>
 
-# The folder where are under development modules
-$localModulesPath = 'C:\Users\Admin\works' # to be used later ...
-
 $localRepoPath = Join-Path -Path $env:USERPROFILE -ChildPath 'LocalRepo'
 
-# Get path to user-specific installed modules
-$userModulesPath = $env:PSModulePath -split ';' | Where-Object { $_ -like [Environment]::GetFolderPath('MyDocuments')+'*'}
+# From all available paths, select only the user-specific path to installed modules
+$myModulePath = $env:PSModulePath -split ';' | Where-Object { $_ -like [Environment]::GetFolderPath('MyDocuments')+'*'}
 
-if (-not ($userModulesPath)) {
+if (-not ($myModulePath)) {
     Write-Host "User-specific module path " -NoNewline -ForegroundColor Red
-    Write-Host $userModulesPath -NoNewline -ForegroundColor DarkGray
+    Write-Host $myModulePath -NoNewline -ForegroundColor DarkGray
     Write-Host " not found in PSModulePath." -ForegroundColor Red
     Exit 2    
 }
 
-$RepoInstalledModules = (Get-InstalledModule).Name
+$repoInstalledModNames = (Get-InstalledModule).Name
 
-function Install-LocalModule {
+function Install-LModule {
     <#
     .SYNOPSIS
         Install a local module bypassing repositories
@@ -42,13 +39,13 @@ function Install-LocalModule {
         # Get module name from folder name
         $moduleName = Split-Path -Path $Path -Leaf        
 
-        if ($RepoInstalledModules -contains $moduleName) {# Local module installed from a repo check
+        if ($repoInstalledModNames -contains $moduleName) {# Local module installed from a repo check
             Write-Host "$moduleName already installed from a repository" -ForegroundColor Red
             Write-Host "Uninstall any version installed from a repository before continuing" -ForegroundColor DarkYellow
         } 
         else {
             # Uninstall previous local module if exist
-            $ver0ModulePath = Join-Path $userModulesPath $moduleName '0.0.0'
+            $ver0ModulePath = Join-Path $myModulePath $moduleName '0.0.0'
             Remove-Item -Path $ver0ModulePath -Recurse -Force -ErrorAction SilentlyContinue
 
             # Install current local module
@@ -93,7 +90,7 @@ function Install-LocalModule {
 }
 
 
-function Uninstall-LocalModule {
+function Uninstall-LModule {
     <#
     .SYNOPSIS
         Uninstall a local module 
@@ -106,13 +103,13 @@ function Uninstall-LocalModule {
         [String]$Name
     )
 
-    # $ver0ModulePath = Join-Path -Path $userModulesPath -ChildPath $Name
-    $ver0ModulePath = Join-Path $userModulesPath $Name '0.0.0'
+    # $ver0ModulePath = Join-Path -Path $myModulePath -ChildPath $Name
+    $ver0ModulePath = Join-Path $myModulePath $Name '0.0.0'
 
     # Local module installed check
     if (Test-Path -Path $ver0ModulePath -PathType Container) {
 
-        if ($RepoInstalledModules -contains $Name) {# Local module installed from a repo check
+        if ($repoInstalledModNames -contains $Name) {# Local module installed from a repo check
             Write-Host "$Name is installed from a repository. Use cmdlet Uninstall-Module to uninstall it"
         } else {
             Remove-Item -Path $ver0ModulePath -Recurse -Force
@@ -123,7 +120,7 @@ function Uninstall-LocalModule {
     }    
 }
 
-function Get-LocalInstalledModule {
+function Get-LInstalledModule {
     <#
     .SYNOPSIS
         Get locally installed modules
@@ -133,20 +130,20 @@ function Get-LocalInstalledModule {
     [CmdletBinding()]
     param ()
     # Get all directories in user modules path
-    $installedModules = (Get-ChildItem -Path $userModulesPath -Directory).Name
-    $localInstalledModules = Compare-Object -ReferenceObject $installedModules -DifferenceObject $RepoInstalledModules -PassThru | 
+    $allInstalledModNames = (Get-ChildItem -Path $myModulePath -Directory).Name
+    $localInstalledModNames = Compare-Object -ReferenceObject $allInstalledModNames -DifferenceObject $repoInstalledModNames -PassThru | 
     Where-Object { $_.SideIndicator -eq "<=" }
 
-    if ($localInstalledModules.Count -eq 0) {
+    if ($localInstalledModNames.Count -eq 0) {
         Write-Host "No local modules found." -ForegroundColor DarkYellow
     } else {
         Write-Host "`nName`n----" -ForegroundColor Green
-        Write-Host $localInstalledModules -Separator "`n"
+        Write-Host $localInstalledModNames -Separator "`n"
         Write-Host " "
     }
 }
 
-function Set-LocalRepo {
+function Set-LRepo {
     <#
     .SYNOPSIS
         Set up LocalRepo repository on the file system
@@ -171,7 +168,7 @@ function Set-LocalRepo {
     }    
 }
 
-function Remove-LocalRepo {
+function Remove-LRepo {
     <#
     .SYNOPSIS
         Remove LocalRepo repository from the file system
