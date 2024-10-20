@@ -1,6 +1,31 @@
-site_name: LocalModules Docs
+site_name: LocalModules
+site_url: https://humanagainstmachine.github.io/LocalModules/
+repo_url: https://github.com/HumanAgainstMachine/LocalModules
+nav:
+- LocalModules: index.md
+- Local Repo: LocalRepo.md
 theme:
-  name: readthedocs
-  highlightjs: true
-  hljs_languages:
-    - powershell
+  name: material
+  icon:
+    logo: fontawesome/solid/computer
+    annotation: material/plus-circle
+  language: en
+  features:
+    - navigation.tabs
+    # - navigation.tabs.sticky
+    - toc.integrate
+    - navigation.top
+    - content.code.copy
+    - navigation.footer
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg  
+  - def_list
+  - admonition
+  - attr_list
+  - md_in_html
