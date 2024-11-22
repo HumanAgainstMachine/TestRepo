@@ -1,19 +1,19 @@
 # LocalModules
 
-**LocalModules** allows you to easily install and uninstall PowerShell (PS) modules that are still under development and not yet ready for publishing. This streamlines the development and testing process. 
+**LocalModules** allows you to easily install and uninstall PowerShell (PS) modules that are still under development and not yet ready for publishing. This streamlines the development and testing process.
 
 ## Intro
 
 In this context, a local module is a Powershell module under development with a file layout like this:
 
-    MyModuleNameFolder/
+    MyModuleName/ # The folder containing files
         MyModuleName.psm1 # The code file.
         MyModuleName.psd1 # The manifest.
         ...             # Other files, e.g. manifest file.
 
-While developing a PowerShell module on your computer, you will often need to install it on your system to test it. Installing from a repository requires you to go through the long process of first publishing the module. 
+While developing a PowerShell module on your computer, you will often need to install it on your system to test it. Installing from a repository requires you to go through the long process of first publishing the module.
 
-There is a shortcut to install a local module bypassing repositories, this involves copying the module folder and files to a directory on your Windows computer. 
+There is a shortcut to install a local module bypassing repositories, this involves copying the module folder and files to a directory on your Windows computer.
 
 !!! quote "As Microsoft says:"
     To install and run your module, save the module to one of the appropriate PowerShell paths [...]. The paths where you can install your module are located in the `$env:PSModulePath` global variable.
@@ -42,7 +42,8 @@ Install-Module -Name LocalModules
 ## Cmdlets overview
 
 `#!powershell Install-LModule  -Path <path_to_my_module>`
-:   Install the local module specified by `-Path` parameter; it can be an absolute or relative path.
+:   Install the local module specified by `-Path` parameter, it can be an absolute or relative path.  
+No need to uninstall the previous installation.
 
 
 `#!powershell Get-LInstalledModule`

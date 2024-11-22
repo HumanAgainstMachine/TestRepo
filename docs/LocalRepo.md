@@ -40,7 +40,7 @@ LocalRepo                 Trusted              C:\Users\<youser>\LocalRepo
 Publishing to LocalRepo:
 
 ```powershell
-PS:> Publish-Module -Name <my_mod_name> -Repository LocalRepo
+PS:> Publish-Module -Path <Path/to/modulefolder> -Repository LocalRepo
 ```
 
 Installing a module from LocalRepo:
